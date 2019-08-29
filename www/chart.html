@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Document</title>
+<style>
+  #myul {
+    width: 500px;
+    list-style: none;
+  }
+  .mine {
+    color: aqua;
+  }
+  .other {
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+  userName: <input type="text" id="user">
+  <br>
+  password: <input type="password" id="pwd">
+  <br>
+  <button id="reg">register</button>
+  <button id="login">login</button>
+  <br><br>
+  <textarea name="" id="content" cols="30" rows="6"></textarea>
+  <button id="sendBtn">发送</button>
+  <br><br>
+  <div class="wrapper" id="wrapper">
+    <div class="box">
+
+    </div>
+  </div>
+  <ul id="myul">
+
+  </ul>
+  <script src="http://172.31.212.31:3001/socket.io/socket.io.js" charset="utf-8"></script>
+  <script>
+     var user = document.getElementById('user')
+     var pwd = document.getElementById('pwd')
+     var reg = document.getElementById('reg')
+     var login = document.getElementById('login')
+     var content = document.getElementById('content')
+     var sendBtn = document.getElementById('sendBtn')
+
+
+     var sock = io.connect('ws://172.31.212.31:3001/') // 建立连接
+
+     var currentUserName = ''
+
+     // 注册
+     sock.on('reg_ret', (code, msg) => {
+       if (code) { // 1 表示注册成功
+         alert(msg)
+       } else { // 0 注册失败
+         alert(msg)
+       }
+     })
+
+     // 登录
+     sock.on('login_ret', (code, msg, name) => {
+       if (code) {
+         currentUserName = name
+         alert(`用户名 ${name} ${msg}`)
+       } else {
+         alert(`${msg}`)
+       }
+     })
+     // 消息
+     sock.on('sendChart', (curname, msg) => {
+        let myul = document.getElementById('myul')
+        let li = document.createElement('li')
+        li.innerHTML = `<h3>${curname}<h3><p>${msg}</p>`
+        li.className = 'other'
+        myul.appendChild(li)
+     })
+     // 监听消息
+     sock.on('sendChart_ret', (code, msg) => {
+       if (code) {
+         let myul = document.getElementById('myul')
+         let li = document.createElement('li')
+         li.innerHTML = `<h3>${currentUserName}<h3><p>${content.value}</p>`
+         li.className = 'mine'
+         myul.appendChild(li)
+         content.value = ''
+         alert(msg)
+       } else {
+         alert(msg)
+       }
+     })
+
+     // 点击注册按钮
+     reg.onclick = function() {
+       sock.emit('reg', user.value, pwd.value)
+     }
+     // 点击登录按钮
+     login.onclick = function() {
+       sock.emit('login', user.value, pwd.value)
+     }
+     // 点击发送按钮
+     sendBtn.onclick = function() {
+       sock.emit('sendChart', content.value)
+     }
+  </script>
+</body>
+</html>

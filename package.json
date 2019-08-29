@@ -1,0 +1,13 @@
+{
+  "name": "websocket",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "nodemon": "^1.19.1",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "mysql": "^2.17.1"
+  }
+}

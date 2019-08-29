@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Home</title>
+</head>
+<body>
+  username: <input type="text" id="username">
+  password: <input type="password" id="pwd">
+  <button id="submit">submit</button>
+  <script src="./jquery.js"></script>
+  <script>
+    $('#submit').click(function () {
+      var username = $('#username').val()
+      var pwd = $('#pwd').val()
+      $.ajax({
+        url: `http://localhost:3000/reg?username=${username}&pass=${pwd}`,
+        dataType:'json',
+        method: 'get',
+        success: function (res) {
+          if (res.code == 1) {
+            alert(res.msg)
+          } else {
+            alert(res.msg)
+          }
+        },
+        error: function (err) {
+          alert('系统错误' + err)
+        }
+      })
+    })
+  </script>
+</body>
+</html>
